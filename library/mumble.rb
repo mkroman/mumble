@@ -7,6 +7,7 @@ require 'eventmachine'
 require 'awesome_print'
 
 require 'mumble/version'
+require 'mumble/server'
 require 'mumble/messages'
 require 'mumble/connection'
 require 'mumble/client'

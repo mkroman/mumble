@@ -19,14 +19,6 @@ module Mumble
         @connection = EM.connect "uplink.io", 64738, Connection, self
       end
     end
-
-    def receive_message message
-      case message
-      when Messages::Version
-      end
-      @log.debug "Received message #{message.to_hash.ai}"
-    end
-
     def connection_completed
       send_version
       send_authentication
