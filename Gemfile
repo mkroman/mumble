@@ -11,6 +11,7 @@ group :test do
 end
 
 group :development do
+  gem 'yard'
   gem 'logging'
   gem 'awesome_print'
 end
