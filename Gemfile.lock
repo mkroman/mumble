@@ -5,7 +5,7 @@ GEM
       timers (~> 1.1.0)
     coderay (1.1.0)
     diff-lcs (1.2.5)
-    eventmachine (1.0.3)
+    eventmachine-le (1.1.6)
     ffi (1.9.3)
     formatador (0.2.5)
     guard (2.6.1)
@@ -50,7 +50,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  eventmachine
+  eventmachine-le
   guard
   guard-rspec
   rspec

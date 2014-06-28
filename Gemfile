@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'eventmachine'
+gem 'eventmachine-le'
 
 group :test do
   gem 'rspec'

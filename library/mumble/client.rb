@@ -14,7 +14,8 @@ module Mumble
     # Connect to the mumble server.
     def connect
       EM.run do
-
+        @connection = EM.connect "uplink.io", 64738, Connection
+        p @connection
       end
     end
   end
