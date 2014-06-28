@@ -1,5 +1,7 @@
 source 'https://rubygems.org'
 
+gem 'hashie'
+gem 'ruby_protobuf'
 gem 'eventmachine-le'
 
 group :test do
@@ -9,5 +11,6 @@ group :test do
 end
 
 group :development do
-  # …
+  gem 'logging'
+  gem 'awesome_print'
 end
