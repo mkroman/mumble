@@ -399,7 +399,7 @@ module Mumble
     # Returns the alias for a message, by its message class or type id.
     #
     # @param klass_or_type_id A class for a type, or a type id.
-    # @return [Symbol] the alias.
+    # @return [Symbol] The alias.
     def self.alias_for klass_or_type_id
       if klass_or_type_id.is_a? Fixnum
         klass = MessageTypes[klass_or_type_id]
@@ -407,6 +407,20 @@ module Mumble
         return MessageAliases[klass]
       else
         return MessageAliases[klass_or_type_id]
+      end
+    end
+
+    # Returns the class for a given type id, or alias.
+    #
+    # @param alias_or_type_id The alias or type id.
+    # @return [Class] The class.
+    def self.class_for alias_or_type_id
+      if alias_or_type_id.is_a? Fixnum
+        return MessageTypes[alias_or_type_id]
+      else
+        klass = MessageTypes.key alias_or_type_id
+
+        return klass
       end
     end
   end

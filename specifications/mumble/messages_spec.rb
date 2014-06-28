@@ -17,4 +17,12 @@ describe Mumble::Messages do
       expect(version_alias).to be_kind_of Symbol
     end
   end
+
+  describe ".class_for" do
+    it "returns a class" do
+      version_class = Mumble::Messages.class_for 0
+
+      expect(version_class).to eq Mumble::Messages::Version
+    end
+  end
 end
