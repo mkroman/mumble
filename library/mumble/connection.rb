@@ -3,10 +3,14 @@
 module Mumble
   class Connection < EM::Connection
     HeaderSize = 6 # The header is 6 bytes.
-    HeaderFormat = 'nN' # The type is 2 bytes, and the length value is 4 bytes.
+    HeaderFormat = 'nN' # The type is 2 bytes, and the length value is 4 bytes   def initialize client = nil
 
-    def initialize client = nil
-      @client = client
+    # Create a new server connection.
+    #
+    # @param [Server] server The server reference.
+    def initialize server = nil
+      @server = server
+      @server.connection = self
 
       super
     end
@@ -25,7 +29,7 @@ module Mumble
     def ssl_handshake_completed
       @log.debug "SSL handshake completed"
 
-      @client.connection_completed
+      @server.connection_completed
     end
 
     def ssl_verify_peer peer_cert
@@ -48,7 +52,7 @@ module Mumble
             message = klass.new
             message.parse_from_string @buffer.slice HeaderSize, length
 
-            @client.receive_message message
+            @server.receive_message message
           end
 
           @buffer.slice! 0, message_size
@@ -56,7 +60,10 @@ module Mumble
       end
     end
 
-    # Send a message.
+    # Send a message to the server.
+    #
+    # @param [Protobuf::Message] message_type The message class.
+    # @param [Hash] attributes The message attributes.
     def send_message message_type, attributes = {}
       message = message_type.new
 

@@ -3,6 +3,7 @@
 module Mumble
   class Client
     attr_accessor :options
+    attr_accessor :servers
 
     # Create a new client instance.
     #
@@ -10,39 +11,21 @@ module Mumble
     def initialize options = {}
       @log = Logging.logger[self]
       @options = options
+      @servers = []
       @connection = nil
     end
 
-    # Connect to the mumble server.
+    # Connect to the mumble servers.
     def connect
-      EM.run do
-        @connection = EM.connect "uplink.io", 64738, Connection, self
+      EM.error_handler do |exception|
+        p exception
       end
-    end
-    def connection_completed
-      send_version
-      send_authentication
-    end
 
-    def send_version
-      @log.debug "Sending version to the server"
-
-      @connection.send_message Messages::Version, {
-        os_version: "hest",
-           version: 66055,
-           release: "1.2.7",
-                os: "X11"
-      }
-    end
-
-    def send_authentication
-      @log.debug "Sending authentication to the server"
-
-      @connection.send_message Messages::Authenticate, {
-        username: "meta",
-        password: "1234",
-        opus: true
-      }
+      EM.run do
+        @servers.each do |server|
+          connection = EM.connect server.host, server.port, Connection, server
+        end
+      end
     end
   end
 end
