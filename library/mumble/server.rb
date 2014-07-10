@@ -11,8 +11,8 @@ module Mumble
     # @return [Connection] The server connection.
     attr_accessor :connection
 
-    # @return [Server] The server reference.
-    attr_accessor :server
+    # @return [Hash] the server options.
+    attr_accessor :options
 
     # Create a new server connection handler.
     #
@@ -24,6 +24,10 @@ module Mumble
       @host = host
       @port = port
       @options = options
+
+      unless @options.key? :username
+        raise ServerError, 'no :username is provided'
+      end
     end
 
     # Called when the sever connection is established.

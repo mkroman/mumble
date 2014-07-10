@@ -38,6 +38,9 @@ Logging.logger.root.appenders = Logging.appenders.stdout(
 AwesomePrint.defaults = { multiline: false }
 
 module Mumble
+  ServerError = Class.new StandardError
+  AuthenticationError = Class.new StandardError
+
   def self.connect options = {}, &block
     Client.new(options).tap do |client|
       client.instance_eval &block
