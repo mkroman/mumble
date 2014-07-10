@@ -103,8 +103,35 @@ describe Mumble::CertificateManager do
 
       it 'should return the generated key' do
         key = double :key
+        allow(subject).to receive(:generate_private_key).and_return key
 
+        expect(subject.load_private_key).to eq key
       end
+    end
+  end
+
+  describe '#generate_private_key' do
+    let(:file_stub) { double(:file).as_null_object } 
+    let(:private_key) { double(:private_key).as_null_object }
+    before(:each) { allow(File).to receive(:open).and_yield file_stub }
+
+    it 'should generate a new rsa key' do
+      expect(OpenSSL::PKey::RSA).to receive(:generate).and_return private_key
+
+      subject.generate_private_key
+    end
+
+    it 'should save the key' do
+      expect(File).to receive :open
+      expect(file_stub).to receive :write
+
+      subject.generate_private_key
+    end
+
+    it 'should save as pem' do
+      expect_any_instance_of(OpenSSL::PKey::RSA).to receive(:to_pem)
+
+      subject.generate_private_key
     end
   end
 end

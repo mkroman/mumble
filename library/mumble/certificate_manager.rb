@@ -52,6 +52,17 @@ module Mumble
       Dir.pwd
     end
 
+    def generate_private_key
+      private_key = OpenSSL::PKey::RSA.generate 2048
+      private_key_path = File.join certificates_path, 'private.key'
+
+      File.open private_key_path, 'w' do |file|
+        file.write private_key.to_pem
+      end
+
+      private_key
+    end
+
     def generate_public_certificate
       OpenSSL::X509::Certificate.new
     end
