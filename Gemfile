@@ -6,6 +6,7 @@ gem 'eventmachine-le'
 
 group :test do
   gem 'rspec'
+  gem 'rspec-its'
   gem 'guard'
   gem 'guard-rspec'
 end

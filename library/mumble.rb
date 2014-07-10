@@ -10,6 +10,7 @@ require 'mumble/version'
 require 'mumble/server'
 require 'mumble/messages'
 require 'mumble/connection'
+require 'mumble/certificate_manager'
 require 'mumble/client'
 
 Logging.logger.root.level = :debug
