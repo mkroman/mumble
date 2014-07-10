@@ -105,6 +105,7 @@ describe Mumble::CertificateManager do
       let(:file_stub) { double(:file_stub).as_null_object }
 
       before do
+        allow(subject).to receive :restore
         allow(File).to receive(:exist?).and_return true
         allow(File).to receive(:read).and_return KEY
       end
