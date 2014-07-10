@@ -14,6 +14,8 @@ module Mumble
     # @return [Hash] the server options.
     attr_accessor :options
 
+    attr_accessor :cert_manager
+
     # Create a new server connection handler.
     #
     # @param [String] host            The remote hosts name or IP-address.
@@ -24,6 +26,8 @@ module Mumble
       @host = host
       @port = port
       @options = options
+      @cert_manager = CertificateManager.new
+      @cert_manager.restore
 
       unless @options.key? :username
         raise ServerError, 'no :username is provided'

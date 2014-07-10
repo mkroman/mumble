@@ -23,7 +23,10 @@ module Mumble
 
       @log.debug "Creating secure connection"
 
-      start_tls ssl_version: :TLSv1, private_key_file: "/tmp/key", cert_chain_file: "/tmp/cert"
+      key_path = @server.cert_manager.private_key_path
+      cert_path = @server.cert_manager.public_certificate_path
+
+      start_tls ssl_version: :TLSv1, private_key_file: key_path, cert_chain_file: cert_path
     end
 
     def ssl_handshake_completed

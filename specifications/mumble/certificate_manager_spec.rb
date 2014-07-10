@@ -20,6 +20,26 @@ describe Mumble::CertificateManager do
     end
   end
 
+  describe '#private_key_path' do
+    it 'should be a string' do
+      expect(subject.private_key_path).to be_kind_of String
+    end
+
+    it 'should use the certificates path as a base folder' do
+      expect(subject.private_key_path).to start_with subject.certificates_path
+    end
+  end
+
+  describe '#public_certificate_path' do
+    it 'should be a string' do
+      expect(subject.public_certificate_path).to be_kind_of String
+    end
+
+    it 'should use the certificates path as a base folder' do
+      expect(subject.public_certificate_path).to start_with subject.certificates_path
+    end
+  end
+
   describe '#restore' do
     before do
       allow(subject).to receive :load_private_key
@@ -40,6 +60,12 @@ describe Mumble::CertificateManager do
   end
 
   describe '#load_public_certificate' do
+    before do
+      file_stub = double(:file).as_null_object
+      allow(File).to receive(:open).and_yield file_stub
+      subject.private_key = OpenSSL::PKey::RSA.new KEY
+    end
+
     context 'when the certificate exists' do
       before do
         allow(File).to receive(:exist?).and_return true
@@ -58,13 +84,15 @@ describe Mumble::CertificateManager do
     end
 
     context "when the certificate doesn't exist" do
+      before do
+        allow(File).to receive(:exist?).and_return false
+      end
+
       it 'should generate a certificate' do
         expect(subject).to receive :generate_public_certificate
 
         subject.load_public_certificate
       end
-
-      it 'should save the certificate'
     end
 
     it 'should return a certificate' do
@@ -132,6 +160,28 @@ describe Mumble::CertificateManager do
       expect_any_instance_of(OpenSSL::PKey::RSA).to receive(:to_pem)
 
       subject.generate_private_key
+    end
+  end
+
+  describe '#generate_public_certificate' do
+    let(:file_stub) { double(:file).as_null_object }
+
+    before do
+      allow(File).to receive(:open).and_yield file_stub
+      subject.private_key = OpenSSL::PKey::RSA.new KEY
+    end
+
+    it 'should save the certificate' do
+      expect(File).to receive(:open)
+      expect(file_stub).to receive :write
+
+      subject.generate_public_certificate
+    end
+
+    it 'should save as pem' do
+      expect_any_instance_of(OpenSSL::X509::Certificate).to receive(:to_pem)
+
+      subject.generate_public_certificate
     end
   end
 end
