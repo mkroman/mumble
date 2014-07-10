@@ -27,7 +27,6 @@ module Mumble
       @port = port
       @options = options
       @cert_manager = CertificateManager.new
-      @cert_manager.restore
 
       unless @options.key? :username
         raise ServerError, 'no :username is provided'

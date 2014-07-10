@@ -11,6 +11,8 @@ module Mumble
     def initialize
       @private_key = nil
       @public_certificate = nil
+
+      restore
     end
 
     # Restore the certificates from disk.

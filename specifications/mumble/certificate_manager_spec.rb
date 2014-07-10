@@ -102,13 +102,15 @@ describe Mumble::CertificateManager do
 
   describe '#load_private_key' do
     context 'when the private key exists' do
+      let(:file_stub) { double(:file_stub).as_null_object }
+
       before do
         allow(File).to receive(:exist?).and_return true
         allow(File).to receive(:read).and_return KEY
       end
 
       it 'should read the key' do
-        expect(File).to receive(:read).with kind_of String
+        expect(File).to receive(:read)
 
         subject.load_private_key
       end
