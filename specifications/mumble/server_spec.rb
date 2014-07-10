@@ -30,7 +30,10 @@ describe Mumble::Server do
     before :each do
       connection = double(:connection).as_null_object
       subject.connection = connection
+
+      allow(EM).to receive :add_periodic_timer
     end
+
     it 'should send version information' do
       expect(subject).to receive :send_version
 
@@ -39,6 +42,12 @@ describe Mumble::Server do
 
     it 'should send authentication' do
       expect(subject).to receive :authenticate
+
+      subject.connection_completed
+    end
+
+    it 'should create a periodic timer for pings' do
+      expect(EM).to receive :add_periodic_timer
 
       subject.connection_completed
     end

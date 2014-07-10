@@ -14,6 +14,7 @@ module Mumble
     # @return [Hash] the server options.
     attr_accessor :options
 
+    # @return [CertificateManager] the certificate manager.
     attr_accessor :cert_manager
 
     # Create a new server connection handler.
@@ -42,6 +43,13 @@ module Mumble
       username = @options[:username]
       password = @options[:password] || 'password'
       authenticate username, password
+
+      # Set up a timer that pings the server.
+      EM.add_periodic_timer 20 do
+        @log.debug "Sending ping message."
+
+        @connection.send_message Messages::Ping, timestamp: Time.now.to_i
+      end
     end
 
     # Called when the server handler receives a message.

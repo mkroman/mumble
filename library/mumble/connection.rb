@@ -23,10 +23,13 @@ module Mumble
 
       @log.debug "Creating secure connection"
 
-      key_path = @server.cert_manager.private_key_path
-      cert_path = @server.cert_manager.public_certificate_path
+      tls_options = {
+        ssl_version: :TLSv1,
+        private_key_file: @server.cert_manager.private_key_path,
+        cert_chain_file: @server.cert_manager.public_certificate_path
+      }
 
-      start_tls ssl_version: :TLSv1, private_key_file: key_path, cert_chain_file: cert_path
+      start_tls tls_options
     end
 
     def ssl_handshake_completed
@@ -43,7 +46,7 @@ module Mumble
     def receive_data data
       @buffer << data
 
-      if @buffer.bytesize >= HeaderSize
+      while @buffer.bytesize >= HeaderSize
         # Read the header.
         type, length = @buffer.unpack HeaderFormat
         message_size = HeaderSize + length
