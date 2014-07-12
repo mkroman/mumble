@@ -1,9 +1,5 @@
 require_relative '../spec_helper'
 
-RSpec::Matchers.define :send_message do |expected|
-  a
-end
-
 describe Mumble::Server do
   let(:options) { { username: 'test' }  }
   subject { Mumble::Server.new 'localhost', 64738, options }
@@ -12,6 +8,7 @@ describe Mumble::Server do
     its(:host) { is_expected.to eq 'localhost' }
     its(:port) { is_expected.to_not be_nil }
     its(:options) { is_expected.to be_kind_of Hash }
+    its(:channels) { is_expected.to be_kind_of Array }
 
     context 'when there is no username in :options' do
       it 'should raise an error' do

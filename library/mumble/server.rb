@@ -27,6 +27,7 @@ module Mumble
       @host = host
       @port = port
       @options = options
+      @channels = []
       @cert_manager = CertificateManager.new
 
       unless @options.key? :username
@@ -42,6 +43,7 @@ module Mumble
 
       username = @options[:username]
       password = @options[:password] || 'password'
+
       authenticate username, password
 
       # Set up a timer that pings the server.
@@ -57,6 +59,17 @@ module Mumble
     # @param [Protobuf::Message] message The received message.
     def receive_message message
       @log.debug "<< #{message.to_hash.ai}"
+
+      case message
+      when Messages::ServerSync
+        @log.debug 'received server sync'
+      when Messages::ChannelState
+        if channel = @channels.find{ |channel| channel.id == message.channel_id }
+
+        else
+        end
+        @log.debug "Received channel state for channel #{message.name}"
+      end
     end
 
     # Exchange the version information with the server.
@@ -84,5 +97,12 @@ module Mumble
 
       @connection.send_message Messages::Authenticate, attributes
     end
+  end
+
+  # Short-hand for @channels.find { … }.
+  #
+  # @return [Channel] the resulting channel.
+  def find_channel &block
+    @channels.find &block
   end
 end

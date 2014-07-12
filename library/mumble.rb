@@ -8,6 +8,7 @@ require 'awesome_print'
 
 require 'mumble/version'
 require 'mumble/server'
+require 'mumble/channel'
 require 'mumble/messages'
 require 'mumble/connection'
 require 'mumble/certificate_manager'
