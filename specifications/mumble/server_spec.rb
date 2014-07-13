@@ -51,7 +51,46 @@ describe Mumble::Server do
   end
 
   describe '#receive_message' do
-    it 'should handle the message'
+    context 'when the message is a ChannelState' do
+      let(:channel_state) do
+        Mumble::Messages::ChannelState.new
+      end
+
+      it 'should handle the message' do
+        expect(subject).to receive :receive_channel_state
+
+        subject.receive_message channel_state
+      end
+    end
+  end
+
+  describe '#receive_channel_state' do
+    let(:channel) { double(:channel).as_null_object }
+    let(:channel_state) { double(id: 1).as_null_object }
+
+    before :each do
+
+    end
+
+    it 'should see if the channel is recognized' do
+      expect(subject).to receive :channel_by_id
+
+      subject.receive_channel_state channel_state
+    end
+
+    context 'when the channel is recognized' do
+      before { allow(subject).to receive(:channel_by_id).and_return channel }
+
+      it 'should synchronize the channel' do
+        expect(channel).to receive :synchronize
+
+        subject.receive_channel_state channel_state
+      end
+    end
+
+    context 'when the channel is new' do
+      pending
+    end
   end
 
   describe '#send_version' do

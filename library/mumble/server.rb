@@ -17,6 +17,9 @@ module Mumble
     # @return [CertificateManager] the certificate manager.
     attr_accessor :cert_manager
 
+    # @return [Array] the list of channels.
+    attr_accessor :channels
+
     # Create a new server connection handler.
     #
     # @param [String] host            The remote hosts name or IP-address.
@@ -64,11 +67,22 @@ module Mumble
       when Messages::ServerSync
         @log.debug 'received server sync'
       when Messages::ChannelState
-        if channel = @channels.find{ |channel| channel.id == message.channel_id }
-
-        else
-        end
+        receive_channel_state message
         @log.debug "Received channel state for channel #{message.name}"
+      end
+    end
+
+    # Called when the client receives a channel state from a server.
+    # 
+    # @param [Message] message The channel state message.
+    def receive_channel_state message
+      if channel = channel_by_id(message.channel_id)
+        channel.synchronize message
+      else
+        channel = Channel.new message.channel_id, message.name
+        channel.synchronize message
+
+        @channels << channel
       end
     end
 
@@ -97,6 +111,13 @@ module Mumble
 
       @connection.send_message Messages::Authenticate, attributes
     end
+  end
+
+  # Find a channel by its index.
+  #
+  # @return [Channel] the matching channel.
+  def channel_by_id channel_id
+    @channels.find{ |channel| channel.id == channel_id }
   end
 
   # Short-hand for @channels.find { … }.
