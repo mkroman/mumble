@@ -75,18 +75,21 @@ module Mumble
       private_key
     end
 
+    # Generate a new certificate and sign it with our private key.
+    #
+    # @return [OpenSSL::X509::Certificate] the public certificate.
     def generate_public_certificate
       cert = OpenSSL::X509::Certificate.new
-      cert.version = 2
       cert.serial = rand(65535) + 1
-      cert.subject = cert.issuer = OpenSSL::X509::Name.parse "/CN=hello/"
+      cert.version = 2
+      cert.subject = cert.issuer = OpenSSL::X509::Name.parse '/CN=Mumble User/'
       cert.public_key = @private_key.public_key
-      cert.not_before = Time.now
       cert.not_after = Time.now + 1 * 365 * 24 * 60 * 60
+      cert.not_before = Time.now
 
       ef = OpenSSL::X509::ExtensionFactory.new
-      ef.subject_certificate = cert
       ef.issuer_certificate = cert
+      ef.subject_certificate = cert
       cert.add_extension ef.create_extension 'keyUsage', 'keyCertSign, cRLSign', true
       cert.add_extension ef.create_extension 'subjectKeyIdentifier', 'hash', false
       cert.sign @private_key, OpenSSL::Digest::SHA256.new

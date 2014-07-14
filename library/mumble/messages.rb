@@ -337,7 +337,7 @@ module Mumble
     end
 
     # A mapping of message type id's to classes.
-    MessageTypes = {
+    MessageTypesToClasses = {
       0 => Version,
       1 => UDPTunnel,
       2 => Authenticate,
@@ -365,6 +365,9 @@ module Mumble
       24 => ServerConfig,
       25 => SuggestConfig
     }
+
+    # A mapping of type classes to ids.
+    MessageClassesToTypes = MessageTypesToClasses.invert
 
     # A mapping of type classes to type aliases.
     MessageAliases = {
@@ -400,13 +403,11 @@ module Mumble
     #
     # @param klass_or_type_id A class for a type, or a type id.
     # @return [Symbol] The alias.
-    def self.alias_for klass_or_type_id
+    def self.alias_for_message klass_or_type_id
       if klass_or_type_id.is_a? Fixnum
-        klass = MessageTypes[klass_or_type_id]
-
-        return MessageAliases[klass]
+        MessageAliases[MessageTypesToClasses[klass_or_type_id]]
       else
-        return MessageAliases[klass_or_type_id]
+        MessageAliases[klass_or_type_id]
       end
     end
 
@@ -414,13 +415,11 @@ module Mumble
     #
     # @param alias_or_type_id The alias or type id.
     # @return [Class] The class.
-    def self.class_for alias_or_type_id
+    def self.class_for_message alias_or_type_id
       if alias_or_type_id.is_a? Fixnum
-        return MessageTypes[alias_or_type_id]
+        MessageTypesToClasses[alias_or_type_id]
       else
-        klass = MessageTypes.key alias_or_type_id
-
-        return klass
+        MessageAliases[alias_or_type_id]
       end
     end
   end
