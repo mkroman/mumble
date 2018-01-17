@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 gem 'hashie'
 gem 'ruby_protobuf'
-gem 'eventmachine-le'
+gem 'eventmachine'
 
 group :test do
   gem 'rspec'
